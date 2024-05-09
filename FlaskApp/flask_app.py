@@ -1,9 +1,15 @@
+import os
+
 from datetime import datetime
 
 from flask import Flask, jsonify, render_template
 import sqlite3
 from flask import request
+from dotenv import load_dotenv
 
+load_dotenv()
+
+PATH_TO_DB = os.getenv("PATH_TO_DB_FILE")
 
 app = Flask(__name__)
 
@@ -16,7 +22,7 @@ def home():
 # Показать все записи
 @app.route("/api/rows", methods=['GET'])
 def rows_index():
-    connection = sqlite3.connect("/Users/semyonf1l1pp0v/PycharmProjects/IR_lab2/IR_lab2_database.db")
+    connection = sqlite3.connect(PATH_TO_DB)
     cursor = connection.cursor()
     cursor.execute("SELECT rowid, latitude, longitude, emerg_title, emerg_timestamp, township FROM Emergency")
     data = cursor.fetchall()
@@ -27,7 +33,7 @@ def rows_index():
 # Показать запись
 @app.route("/api/rows/<string:row_id>", methods=['GET'])
 def rows_show(row_id):
-    connection = sqlite3.connect("/Users/semyonf1l1pp0v/PycharmProjects/IR_lab2/IR_lab2_database.db")
+    connection = sqlite3.connect(PATH_TO_DB)
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM Emergency where rowid = ?", [row_id])
     data = cursor.fetchall()
@@ -38,7 +44,7 @@ def rows_show(row_id):
 # Добавить запись
 @app.route("/api/rows", methods=['POST'])
 def rows_create():
-    connection = sqlite3.connect("/Users/semyonf1l1pp0v/PycharmProjects/IR_lab2/IR_lab2_database.db")
+    connection = sqlite3.connect(PATH_TO_DB)
     cursor = connection.cursor()
     latitude = request.form['latitude']
     longitude = request.form['longitude']
@@ -57,7 +63,7 @@ def rows_create():
 # Удалить запись
 @app.route("/api/rows/<string:row_id>", methods=['DELETE'])
 def rows_destroy(row_id):
-    connection = sqlite3.connect("/Users/semyonf1l1pp0v/PycharmProjects/IR_lab2/IR_lab2_database.db")
+    connection = sqlite3.connect(PATH_TO_DB)
     cursor = connection.cursor()
     cursor.execute("DELETE FROM Emergency where rowid = ?", [row_id])
     if cursor.rowcount == 0:
@@ -71,7 +77,7 @@ def rows_destroy(row_id):
 # Редактировать запись
 @app.route("/api/rows/<int:row_id>", methods=['PUT'])
 def rows_update(row_id):
-    connection = sqlite3.connect("/Users/semyonf1l1pp0v/PycharmProjects/IR_lab2/IR_lab2_database.db")
+    connection = sqlite3.connect(PATH_TO_DB)
     new_latitude = request.form['new_latitude']
     new_longitude = request.form['new_longitude']
     new_emerg_title = request.form['new_emerg_title']
@@ -91,7 +97,7 @@ def rows_update(row_id):
 # Показать число записей за конкретный час
 @app.route("/api/hours/<string:hour>", methods=['GET'])
 def hour_show(hour):
-    connection = sqlite3.connect("/Users/semyonf1l1pp0v/PycharmProjects/IR_lab2/IR_lab2_database.db")
+    connection = sqlite3.connect(PATH_TO_DB)
     cursor = connection.cursor()
 
     cursor.execute("""with t1 as(SELECT strftime('%H', emerg_timestamp) as hour,
@@ -106,7 +112,7 @@ def hour_show(hour):
 
 @app.route('/api/rows/restore', methods=['GET'])
 def rows_restore():
-    connection = sqlite3.connect("/Users/semyonf1l1pp0v/PycharmProjects/IR_lab2/IR_lab2_database.db")
+    connection = sqlite3.connect(PATH_TO_DB)
     cursor = connection.cursor()
 
     cursor.execute('DROP TABLE IF EXISTS Emergency')
