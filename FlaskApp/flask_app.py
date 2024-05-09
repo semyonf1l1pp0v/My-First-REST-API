@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 PATH_TO_DB = os.getenv("PATH_TO_DB_FILE")
-PATH_TO_CSV_FILE = os.getenv("PATH_TO_CSV_FILE")
+PATH_TO_CSV = os.getenv("PATH_TO_CSV_FILE")
 
 app = Flask(__name__)
 
@@ -135,7 +135,7 @@ def rows_restore():
 
     # Загружаем данные из файла
 
-    with open(PATH_TO_CSV_FILE, 'r') as file:
+    with open(PATH_TO_CSV, 'r') as file:
         for i, line in enumerate(file):
             if i == 10:
                 break
