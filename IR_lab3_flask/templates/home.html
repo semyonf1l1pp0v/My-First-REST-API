@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Главная</title>
+</head>
+<body>
+<h1>
+    <center>Выберите опцию</center>
+</h1>
+<center>
+    <!-- Гиперссылка для просмотра всех записей -->
+    <a style="font-size: 24px; line-height: 3" href="http://127.0.0.1:5000/api/rows">Просмотреть все записи</a>
+
+    <!-- Просмотр записи по id -->
+    <form action="" method="get" id="row_number">
+        <label style="font-size: 24px; line-height: 3" for="row_id">Просмотреть запись с id</label>
+        <input type="text" placeholder="введите id" id="row_id" required>
+    </form>
+
+    <script>
+        document.getElementById('row_number').onsubmit = function() {
+            this.action = "http://127.0.0.1:5000/api/rows/" + document.getElementById('row_id').value;
+            document.getElementById('row_id').value = '';
+        }
+    </script>
+
+    <!-- Просмотр числа обращений за указанный час -->
+    <form action="" method="get" id="hour_number">
+        <label style="font-size: 24px; line-height: 3" for="hour_id">Просмотреть число обращений за конкретный час </label>
+        <input type="text" placeholder="введите час" id="hour_id" required>
+    </form>
+
+    <script>
+        document.getElementById('hour_number').onsubmit = function() {
+            this.action = "http://127.0.0.1:5000/api/hours/" + document.getElementById('hour_id').value;
+            document.getElementById('hour_id').value = '';
+        }
+    </script>
+
+    <!-- Удаление строки по id -->
+    <form action="" method="get" id="delete_row_number">
+        <label style="font-size: 24px; line-height: 3" for="delete_row_id">Удалить запись с id </label>
+        <input type="text" placeholder="введите id" id="delete_row_id" required>
+    </form>
+
+    <script>
+        document.getElementById('delete_row_number').onsubmit = function(event) {
+        event.preventDefault();
+        var xhr = new XMLHttpRequest();
+        var row_num = document.getElementById('delete_row_id').value;
+        xhr.open('DELETE', 'http://127.0.0.1:5000/api/rows/' + row_num, true);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                alert('Запись успешно удалена');
+            }
+            else if (xhr.readyState === 4 && xhr.status === 404) {
+                alert('Запись с id ' + row_num + ' не найдена');
+            }
+        };
+        xhr.send();
+        document.getElementById('delete_row_id').value = '';
+    }
+    </script>
+
+    <!-- Вернуть записи таблицы в первоначальный вид -->
+    <a style="font-size: 24px; line-height: 3" onclick="alert('Записи восстановлены');"
+       methods="GET" href="http://127.0.0.1:5000/api/rows/restore">Восстановить записи
+    </a>
+
+
+
+</center>
+</body>
+</html>
