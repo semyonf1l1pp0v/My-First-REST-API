@@ -12,7 +12,7 @@ load_dotenv()
 PATH_TO_DB = os.getenv("PATH_TO_DB_FILE")
 PATH_TO_CSV = os.getenv("PATH_TO_CSV_FILE")
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='../templates', static_folder='../static')
 
 
 @app.route('/')
